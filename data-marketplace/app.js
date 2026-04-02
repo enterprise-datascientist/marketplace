@@ -74,9 +74,9 @@ function doLogin(user) {
     // Reorder tabs for DivHead
     var navTabs = document.querySelector('.nav-tabs');
     navTabs.appendChild(document.getElementById('risk-tab'));
-    navTabs.appendChild(document.getElementById('adoption-tab'));
     navTabs.appendChild(document.getElementById('flow-tab'));
     navTabs.appendChild(approvalTab);
+    navTabs.appendChild(document.getElementById('adoption-tab'));
   } else {
     badge.textContent = 'Analyst'; badge.classList.remove('approver');
     approvalTab.style.display = 'none';
@@ -512,9 +512,9 @@ function toggleApproverMode() {
     // Reorder: Catalog, Actions, Risk, Adoption, Process Flow, Approvals
     const navTabs = document.querySelector('.nav-tabs');
     navTabs.appendChild(riskTab);
-    navTabs.appendChild(document.getElementById('adoption-tab'));
     navTabs.appendChild(flowTab);
     navTabs.appendChild(approvalTab);
+    navTabs.appendChild(document.getElementById('adoption-tab'));
   } else {
     badge.textContent = 'Analyst'; badge.classList.remove('approver');
     approvalTab.style.display = 'none';
