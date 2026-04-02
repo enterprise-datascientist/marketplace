@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAS Enterprise Data Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ── LOGIN PAGE (split-screen) ─────────────────────────────────────────────── -->
+<div id="login-page">
+  <!-- Left: Branding + Tour -->
+  <div class="login-left">
+    <div class="login-left-inner">
+      <svg width="260" height="75" viewBox="0 0 350 100" xmlns="http://www.w3.org/2000/svg" aria-label="MAS">
+        <rect x="0" y="0" width="100" height="100" fill="#1B2A4A"/>
+        <circle cx="50" cy="50" r="38" fill="#B8962E"/>
+        <text x="50" y="62" text-anchor="middle" font-size="32" font-weight="700" fill="white" font-family="Georgia,serif" letter-spacing="-1">MAS</text>
+        <text x="116" y="42" font-size="21" fill="#B8962E" font-family="Georgia,'Times New Roman',serif" font-style="italic">Monetary Authority</text>
+        <text x="116" y="68" font-size="21" fill="#B8962E" font-family="Georgia,'Times New Roman',serif" font-style="italic">of Singapore</text>
+      </svg>
+      <h1 class="login-left-title">Enterprise Data Marketplace</h1>
+      <p class="login-left-sub">Secure access to MAS datasets, analytics, and intelligence</p>
+
+      <div class="login-tour" id="login-tour">
+        <div class="login-tour-slide active" data-slide="0">
+          <div><div class="login-tour-title">🗄️ Browse Data Catalog</div>
+          <div class="login-tour-desc">11 datasets across 7 categories — Market Data, Trade Data, Regulatory, Supervision</div></div>
+          <div class="login-tour-chart"><canvas id="tour-chart-0"></canvas></div>
+        </div>
+        <div class="login-tour-slide" data-slide="1">
+          <div><div class="login-tour-title">🔄 OTC Derivatives — Network Analysis</div>
+          <div class="login-tour-desc">Counterparty exposure network, eigenvalue spectrum, systemic risk heatmap</div></div>
+          <div class="login-tour-chart"><canvas id="tour-chart-1"></canvas></div>
+        </div>
+        <div class="login-tour-slide" data-slide="2">
+          <div><div class="login-tour-title">🇸🇬 SGX Trade & Market Data</div>
+          <div class="login-tour-desc">STI index trend, daily turnover, top traded equities, derivatives volume</div></div>
+          <div class="login-tour-chart"><canvas id="tour-chart-2"></canvas></div>
+        </div>
+        <div class="login-tour-slide" data-slide="3">
+          <div><div class="login-tour-title">💱 MAS Exchange Rate Analytics</div>
+          <div class="login-tour-desc">SGD spot rates, S$NEER policy band, forward curve, regional FX performance</div></div>
+          <div class="login-tour-chart"><canvas id="tour-chart-3"></canvas></div>
+        </div>
+        <div class="login-tour-slide" data-slide="4">
+          <div><div class="login-tour-title">🛡️ Risk & Compliance Scorecard</div>
+          <div class="login-tour-desc">Compliance scoring, risk flags, access governance, and enforcement alerts</div></div>
+          <div class="login-tour-chart"><canvas id="tour-chart-4"></canvas></div>
+        </div>
+        <div class="login-tour-slide" data-slide="5">
+          <div><div class="login-tour-title">🚨 Intelligence Actions & AI Agent</div>
+          <div class="login-tour-desc">Cross-dataset alerts, market predictions, natural language data queries</div></div>
+          <div class="login-tour-chart"><canvas id="tour-chart-5"></canvas></div>
+        </div>
+        <div class="login-tour-dots" id="login-tour-dots"></div>
+      </div>
+
+      <p class="login-left-footer">MAS Internal System · Authorised Users Only</p>
+    </div>
+  </div>
+
+  <!-- Right: Login Form -->
+  <div class="login-right">
+    <div class="login-right-inner">
+      <h2 class="login-title">Sign In</h2>
+      <p class="login-subtitle">Select a user or enter credentials</p>
+
+      <div class="login-user-grid" id="login-user-grid">
+        <!-- populated by JS -->
+      </div>
+
+      <div class="login-divider"><span>or sign in with credentials</span></div>
+
+      <div class="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email</label>
+          <input class="form-control" type="email" id="login-email" placeholder="name@mas.gov.sg" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input class="form-control" type="password" id="login-password" placeholder="••••••••" />
+        </div>
+        <button class="btn btn-primary" style="width:100%;padding:0.65rem;font-size:0.9rem" onclick="loginWithForm()">Sign In</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN APP (hidden until login) ──────────────────────────────────────── -->
+<div id="app-shell" style="display:none">
+
+<nav>
+  <div class="nav-brand">
+    <div class="mas-logo-wrap">
+      <!-- MAS Logo: navy block + gold circle + wordmark -->
+      <svg width="140" height="40" viewBox="0 0 350 100" xmlns="http://www.w3.org/2000/svg" aria-label="Monetary Authority of Singapore">
+        <!-- Navy left block -->
+        <rect x="0" y="0" width="100" height="100" fill="#1B2A4A"/>
+        <!-- Gold circle -->
+        <circle cx="50" cy="50" r="38" fill="#B8962E"/>
+        <!-- MAS text -->
+        <text x="50" y="62" text-anchor="middle" font-size="32" font-weight="700" fill="white" font-family="Georgia,serif" letter-spacing="-1">MAS</text>
+        <!-- Wordmark -->
+        <text x="116" y="44" font-size="18" fill="#B8962E" font-family="Georgia,'Times New Roman',serif" font-style="italic">Monetary Authority</text>
+        <text x="116" y="68" font-size="18" fill="#B8962E" font-family="Georgia,'Times New Roman',serif" font-style="italic">of Singapore</text>
+      </svg>
+    </div>
+    Enterprise Data Marketplace
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-view="catalog" onclick="switchView('catalog')">Catalog</button>
+    <button class="nav-tab" data-view="mydata" id="mydata-tab" onclick="switchView('mydata')">Business Outcome</button>
+    <button class="nav-tab" data-view="aichat" id="aichat-tab" onclick="switchView('aichat')">AI Agents</button>
+    <button class="nav-tab" data-view="actions" onclick="switchView('actions')">Intelligence</button>
+    <button class="nav-tab" data-view="cbfeed" onclick="switchView('cbfeed')">Central Bank Feeds</button>
+    <button class="nav-tab" data-view="flow" id="flow-tab" onclick="switchView('flow')">Data Discovery</button>
+    <button class="nav-tab" data-view="requests" id="requests-tab" onclick="switchView('requests')">My Requests</button>
+    <button class="nav-tab" data-view="approvals" id="approvals-tab" style="display:none" onclick="switchView('approvals')">Approvals</button>
+    <button class="nav-tab" data-view="risk" id="risk-tab" style="display:none" onclick="switchView('risk')">Risk &amp; Compliance</button>
+    <button class="nav-tab" data-view="adoption" id="adoption-tab" style="display:none" onclick="switchView('adoption')">Adoption</button>
+  </div>
+  <div class="nav-user">
+    <button class="btn btn-outline btn-sm" id="toggle-role-btn" onclick="toggleApproverMode()">Switch to DivHead</button>
+    <div class="nav-user-info" id="nav-user-info">
+      <!-- populated on login -->
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="logout()" title="Sign out" style="padding:0.3rem 0.6rem">⏏</button>
+    <span class="role-badge" id="role-badge">Analyst</span>
+  </div>
+</nav>
+
+<main>
+
+  <!-- CATALOG VIEW -->
+  <div class="view active" id="view-catalog">
+
+    <!-- Category tiles (shown first) -->
+    <div id="catalog-categories">
+      <div class="catalog-cat-header">
+        <h2 class="catalog-cat-title">Data Catalog</h2>
+        <p class="catalog-cat-sub">Select a category to explore available datasets</p>
+      </div>
+      <div class="catalog-cat-grid" id="catalog-cat-grid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- Dataset list (shown after category selected) -->
+    <div id="catalog-datasets" style="display:none">
+      <div class="toolbar">
+        <button class="btn btn-outline btn-sm" onclick="showCatalogCategories()" style="border-color:var(--border);color:var(--text);white-space:nowrap">← All Categories</button>
+        <div class="search-box">
+          <span class="icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Search datasets, providers, tags…" />
+        </div>
+        <select id="filter-tier">
+          <option value="">All Tiers</option>
+          <option value="Premium">Premium</option>
+          <option value="Standard">Standard</option>
+          <option value="Restricted">Restricted</option>
+        </select>
+      </div>
+      <div id="catalog-cat-label" class="catalog-active-cat"></div>
+      <div class="dataset-grid" id="dataset-grid"></div>
+    </div>
+
+  </div>
+
+  <!-- REQUESTS VIEW -->
+  <div class="view" id="view-requests">
+    <div class="requests-header">
+      <h2>My Requests</h2>
+    </div>
+    <div class="requests-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Dataset</th>
+            <th>Provider</th>
+            <th>Department</th>
+            <th>Status</th>
+            <th>Approver</th>
+            <th>Submitted</th>
+          </tr>
+        </thead>
+        <tbody id="requests-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MY DATA VIEW -->
+  <div class="view" id="view-mydata">
+    <div class="mydata-header">
+      <div>
+        <h2>Business Outcome</h2>
+        <p class="mydata-subtitle">All provisioned dataset access across approved requests and Ranger policies</p>
+      </div>
+    </div>
+    <div class="filter-tabs" style="margin-bottom:1.5rem">
+      <button class="mydata-tab filter-tab active" data-mytab="tables" onclick="setMyDataTab('tables')">📋 Tables &amp; Data</button>
+      <button class="mydata-tab filter-tab" data-mytab="policies" onclick="setMyDataTab('policies')">🛡️ Ranger Policies</button>
+    </div>
+    <div id="mydata-content"></div>
+  </div>
+
+  <!-- ACTIVITY VIEW (content moved into Risk & Compliance) -->
+  <div class="view" id="view-activity" style="display:none!important"></div>
+
+  <!-- APPROVALS VIEW -->
+  <div class="view" id="view-approvals">
+    <div class="approvals-header">
+      <h2>Approval Queue</h2>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card pending">
+        <div class="stat-value" id="stat-pending">0</div>
+        <div class="stat-label">Pending Review</div>
+      </div>
+      <div class="stat-card approved">
+        <div class="stat-value" id="stat-approved">0</div>
+        <div class="stat-label">Approved</div>
+      </div>
+      <div class="stat-card rejected">
+        <div class="stat-value" id="stat-rejected">0</div>
+        <div class="stat-label">Rejected</div>
+      </div>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="pending" onclick="setApprovalsFilter('pending')">Pending</button>
+      <button class="filter-tab" data-filter="approved" onclick="setApprovalsFilter('approved')">Approved</button>
+      <button class="filter-tab" data-filter="rejected" onclick="setApprovalsFilter('rejected')">Rejected</button>
+      <button class="filter-tab" data-filter="all" onclick="setApprovalsFilter('all')">All</button>
+    </div>
+    <div id="approvals-list"></div>
+  </div>
+  <!-- RISK & COMPLIANCE DASHBOARD (Dept Head only) -->
+  <div class="view" id="view-risk">
+    <!-- Tab bar -->
+    <div class="risk-tab-bar">
+      <button class="risk-nav-tab active" data-rtab="dashboard" onclick="setRiskTab('dashboard')">🛡️ Risk &amp; Compliance</button>
+      <button class="risk-nav-tab" data-rtab="activity" onclick="setRiskTab('activity')">📋 Activity Log</button>
+      <button class="risk-nav-tab" data-rtab="access" onclick="setRiskTab('access')">👥 Access Report</button>
+    </div>
+
+    <!-- Dashboard tab -->
+    <div id="risk-tab-dashboard">
+      <div id="risk-dashboard-content"></div>
+    </div>
+
+    <!-- Activity Log tab -->
+    <div id="risk-tab-activity" style="display:none">
+      <div class="activity-page-header">
+        <div>
+          <h2>Activity Log</h2>
+          <p class="mydata-subtitle">Data access requests — who submitted, what dataset, and when</p>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center">
+          <select id="activity-filter-dept" onchange="renderActivity()" style="font-size:0.8rem;padding:0.4rem 0.75rem">
+            <option value="">All Departments</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="renderActivity()">↺ Refresh</button>
+        </div>
+      </div>
+      <div class="flow-legend">
+        <span class="legend-item"><span class="legend-line approved"></span>Approved</span>
+        <span class="legend-item"><span class="legend-line pending"></span>Pending</span>
+        <span class="legend-item"><span class="legend-line rejected"></span>Rejected</span>
+      </div>
+      <div class="flow-canvas-wrap" id="flow-canvas-wrap"></div>
+      <div class="stats-row" style="margin-top:1.5rem" id="activity-stats"></div>
+      <div style="margin-top:1.5rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem">
+          <h3 style="font-size:1rem;font-weight:700">Activity Log</h3>
+          <div class="filter-tabs" style="margin-bottom:0">
+            <button class="filter-tab active" data-afilter="all"    onclick="setActivityLogFilter('all')">All</button>
+            <button class="filter-tab" data-afilter="approved"      onclick="setActivityLogFilter('approved')">Approved</button>
+            <button class="filter-tab" data-afilter="pending"       onclick="setActivityLogFilter('pending')">Pending</button>
+            <button class="filter-tab" data-afilter="rejected"      onclick="setActivityLogFilter('rejected')">Rejected</button>
+          </div>
+        </div>
+        <div id="activity-log-list"></div>
+      </div>
+    </div>
+
+    <!-- Access Report tab -->
+    <div id="risk-tab-access" style="display:none">
+      <div class="activity-page-header">
+        <div>
+          <h2>Access Report</h2>
+          <p class="mydata-subtitle">User groups, accounts and dataset access details</p>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center">
+          <select id="access-filter-dept" onchange="renderAccessReport()" style="font-size:0.8rem;padding:0.4rem 0.75rem">
+            <option value="">All Departments</option>
+          </select>
+        </div>
+      </div>
+      <div id="access-report-content"></div>
+    </div>
+  </div>
+
+  <!-- PROCESS FLOW -->
+  <div class="view" id="view-flow">
+    <div id="flow-diagram-content"></div>
+  </div>
+
+  <!-- ACTIONS & INTELLIGENCE -->
+  <div class="view" id="view-actions">
+    <div id="actions-content"></div>
+  </div>
+
+  <!-- ADOPTION SUMMARY (DivHead only) -->
+  <div class="view" id="view-adoption">
+    <div id="adoption-content"></div>
+  </div>
+
+  <!-- CB NEWS FEED -->
+  <div class="view" id="view-cbfeed">
+    <div id="cbfeed-content"></div>
+  </div>
+
+  <!-- AI AGENTS (Analyst only) -->
+  <div class="view" id="view-aichat">
+    <div class="ai-agents-page">
+      <div class="ai-agents-header" id="ai-agents-header">
+        <div>
+          <h2 style="font-size:1.25rem;font-weight:900;margin-bottom:0.25rem">AI Agents</h2>
+          <p style="font-size:0.82rem;color:var(--text-muted)">Specialised agents for data queries, visualisation, prediction, reporting, and presentations</p>
+        </div>
+        <div class="ai-agents-tabs">
+          <button class="ai-agents-tab active" data-agtab="agents" onclick="setAgentTab('agents')">Agents</button>
+          <button class="ai-agents-tab" data-agtab="orchestrate" onclick="setAgentTab('orchestrate')">Orchestrate</button>
+        </div>
+      </div>
+
+      <!-- Agents grid -->
+      <div id="ai-agents-panel">
+        <div class="ai-agents-grid" id="ai-agents-grid"></div>
+      </div>
+
+      <!-- Orchestration panel -->
+      <div id="ai-orchestrate-panel" style="display:none">
+        <div id="ai-orchestrate-content"></div>
+      </div>
+
+      <!-- Agent workspace -->
+      <div id="ai-agent-workspace" style="display:none">
+        <div class="ai-agent-ws-header" id="ai-agent-ws-header"></div>
+        <div class="aichat-messages" id="aichat-messages"></div>
+        <div class="aichat-input-bar">
+          <input type="text" id="aichat-input" class="form-control" placeholder="Ask this agent…" onkeydown="if(event.key==='Enter')sendAiChat()" />
+          <button class="btn btn-primary" onclick="sendAiChat()">Send →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- DATASET DETAIL DRAWER -->
+<div class="drawer-overlay" id="detail-drawer-overlay" onclick="closeDetailDrawer()"></div>
+<div class="detail-drawer" id="detail-drawer">
+  <div class="drawer-inner" id="drawer-inner"></div>
+</div>
+
+<!-- REQUEST MODAL -->
+<div class="modal-overlay" id="request-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Request Data Access</span>
+      <button class="modal-close" onclick="closeRequestModal()">✕</button>
+    </div>
+
+    <div class="dataset-summary">
+      <span style="font-size:2rem" id="modal-dataset-icon"></span>
+      <div>
+        <div style="font-weight:600" id="modal-dataset-name"></div>
+        <div style="font-size:0.8rem; color:var(--text-muted)" id="modal-dataset-provider"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="req-department">Requesting Department</label>
+      <select class="form-control" id="req-department"></select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="req-access-type">Access Type</label>
+      <select class="form-control" id="req-access-type">
+        <option value="read">Read Only</option>
+        <option value="read-write">Read / Write</option>
+        <option value="api">API Access</option>
+        <option value="bulk">Bulk Download</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="req-duration">Access Duration</label>
+      <select class="form-control" id="req-duration">
+        <option value="1month">1 Month</option>
+        <option value="3months">3 Months</option>
+        <option value="6months">6 Months</option>
+        <option value="12months">12 Months</option>
+        <option value="permanent">Permanent</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="req-justification">Business Justification *</label>
+      <textarea class="form-control" id="req-justification" placeholder="Describe why you need access to this dataset and how it will be used…"></textarea>
+    </div>
+
+    <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem">
+      ℹ️ Your request will be routed to your department head for approval.
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeRequestModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitRequest()">Submit Request</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div><!-- end #app-shell -->
+
+<script src="data/datasets.js"></script>
+<script src="dataset-charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
